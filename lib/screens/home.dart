@@ -4,17 +4,40 @@ import 'package:todo_app/model/todo.dart';
 import '../widgets/todo_item.dart';
 
 class Home extends StatefulWidget {
-  Home({super.key});
+  const Home({super.key});
 
   @override
   State<Home> createState() => _HomeState();
-
 }
-
-
 
 class _HomeState extends State<Home> {
   final todosList = ToDo.todoList();
+  final addController = TextEditingController();
+
+
+  void handleToDoChange(ToDo todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
+  }
+
+  void handleDelate(String id) {
+    setState(() {
+      todosList.removeWhere((item) => item.id == id);
+    });
+  }
+
+  void handleAdd(String toDo) {
+    setState(() {
+      todosList.add(ToDo(
+          id: DateTime.now().microsecondsSinceEpoch.toString(),
+          todoText: toDo));
+    });
+    addController.clear();
+  }
+
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -100,8 +123,9 @@ class _HomeState extends State<Home> {
                       ],
                       borderRadius: BorderRadius.circular(10),
                     ),
-                    child: const TextField(
-                      decoration: InputDecoration(
+                    child: TextField(
+                      controller: addController,
+                      decoration: const InputDecoration(
                         hintText: 'Add a new task',
                         border: InputBorder.none,
                       ),
@@ -115,7 +139,9 @@ class _HomeState extends State<Home> {
                   ),
                   child: FloatingActionButton(
                     backgroundColor: Colors.grey[100],
-                    onPressed: () {},
+                    onPressed: () {
+                      handleAdd(addController.text);
+                    },
                     child: Icon(
                       Icons.add,
                       color: Colors.purple[900],
@@ -129,23 +155,9 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-  
-  void handleToDoChange (ToDo todo) {
-    setState(() {
-      todo.isDone = !todo.isDone;
-    });
-    
-  }
 
-
-  void handleDelate (String id) {
-    setState(() {
-      todosList.removeWhere((item) => item.id == id);
-    });
-  }
 
 }
-
 
 class _SearchBox extends StatelessWidget {
   const _SearchBox();

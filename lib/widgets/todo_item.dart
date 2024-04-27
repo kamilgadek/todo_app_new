@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:todo_app/model/todo.dart';
 
 class ToDoItem extends StatelessWidget {
-  ToDoItem({
+  const ToDoItem({
     super.key,
     required this.todo, 
     required this.onToDoChange, 
