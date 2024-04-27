@@ -12,8 +12,14 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   final todosList = ToDo.todoList();
+  List<ToDo> foundToDo = [];
   final addController = TextEditingController();
 
+  @override
+  void initState() {
+    foundToDo = todosList;
+    super.initState();
+  }
 
   void handleToDoChange(ToDo todo) {
     setState(() {
@@ -35,9 +41,24 @@ class _HomeState extends State<Home> {
     });
     addController.clear();
   }
+  void runFilter(String enteredKeyword) {
+    List<ToDo> results = [];
+    if (enteredKeyword.isEmpty) {
+      results = todosList;
+    } else {
+      results = todosList
+          .where((item) => item.todoText!
+              .toLowerCase()
+              .contains(enteredKeyword.toLowerCase()))
+          .toList();
+    }
+
+    setState(() {
+      foundToDo = results;
+    });
+  }
 
   
-
 
   @override
   Widget build(BuildContext context) {
@@ -67,7 +88,7 @@ class _HomeState extends State<Home> {
                 const SizedBox(
                   height: 10,
                 ),
-                const _SearchBox(),
+                 _SearchBox(onSearchChanged: runFilter,),
                 Expanded(
                   child: ListView(
                     children: [
@@ -84,7 +105,7 @@ class _HomeState extends State<Home> {
                           ),
                         ),
                       ),
-                      for (ToDo todoo in todosList)
+                      for (ToDo todoo in foundToDo)
                         ToDoItem(
                           todo: todoo,
                           onToDoChange: handleToDoChange,
@@ -155,12 +176,13 @@ class _HomeState extends State<Home> {
       ),
     );
   }
-
-
 }
 
 class _SearchBox extends StatelessWidget {
-  const _SearchBox();
+  final Function(String) onSearchChanged;
+  const _SearchBox({required this.onSearchChanged});
+  
+
 
   @override
   Widget build(BuildContext context) {
@@ -170,8 +192,9 @@ class _SearchBox extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         color: Colors.grey[100],
       ),
-      child: const TextField(
-        decoration: InputDecoration(
+      child:  TextField(
+       onChanged: (value) => onSearchChanged(value),
+        decoration: const InputDecoration(
             prefixIcon: Icon(
               Icons.search,
               size: 20,
