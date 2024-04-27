@@ -1,9 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:todo_app/model/todo.dart';
 
-class Home extends StatelessWidget {
+import '../widgets/todo_item.dart';
+
+class Home extends StatefulWidget {
   Home({super.key});
 
+  @override
+  State<Home> createState() => _HomeState();
+
+}
+
+
+
+class _HomeState extends State<Home> {
   final todosList = ToDo.todoList();
 
   @override
@@ -54,6 +64,8 @@ class Home extends StatelessWidget {
                       for (ToDo todoo in todosList)
                         ToDoItem(
                           todo: todoo,
+                          onToDoChange: handleToDoChange,
+                          deleteFunction: (),
                         ),
                     ],
                   ),
@@ -63,93 +75,70 @@ class Home extends StatelessWidget {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Row(children: [
-              Expanded(
-                child: Container(
-                  margin: const EdgeInsets.only(
-                    bottom: 20,
-                    right: 20,
-                    left: 20,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[100],
-                    boxShadow: const [
-                      BoxShadow(
-                        color: Colors.grey,
-                        offset: Offset(0.0, 0.0),
-                        blurRadius: 10,
-                        spreadRadius: 0.0,
-                      )
-                    ],
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: const TextField(
-                    decoration: InputDecoration(
-                      hintText: 'Add a new task',
-                      border: InputBorder.none,
+            child: Row(
+              children: [
+                Expanded(
+                  child: Container(
+                    margin: const EdgeInsets.only(
+                      bottom: 20,
+                      right: 20,
+                      left: 20,
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 5,
+                      horizontal: 20,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Colors.grey[100],
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Colors.grey,
+                          offset: Offset(0.0, 0.0),
+                          blurRadius: 10,
+                          spreadRadius: 0.0,
+                        )
+                      ],
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const TextField(
+                      decoration: InputDecoration(
+                        hintText: 'Add a new task',
+                        border: InputBorder.none,
+                      ),
                     ),
                   ),
                 ),
-              ),
-            ]),
+                Container(
+                  margin: const EdgeInsets.only(
+                    bottom: 25,
+                    right: 20,
+                  ),
+                  child: FloatingActionButton(
+                    backgroundColor: Colors.grey[100],
+                    onPressed: () {},
+                    child: Icon(
+                      Icons.add,
+                      color: Colors.purple[900],
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
-}
-
-class ToDoItem extends StatelessWidget {
-  const ToDoItem({
-    super.key,
-    required this.todo,
-  });
-
-  final ToDo todo;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 20),
-      child: ListTile(
-        onTap: () {},
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-        tileColor: Colors.grey[100],
-        leading: Icon(
-          todo.isDone ? Icons.check_box : Icons.check_box_outline_blank,
-          color: Colors.purple[900],
-        ),
-        title: Text(
-          todo.todoText!,
-          style: TextStyle(
-            fontSize: 16,
-            decoration: todo.isDone ? TextDecoration.lineThrough : null,
-          ),
-        ),
-        trailing: Container(
-          padding: const EdgeInsets.all(0),
-          margin: const EdgeInsets.symmetric(vertical: 12),
-          height: 35,
-          width: 35,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5),
-            color: Colors.red,
-          ),
-          child: IconButton(
-            onPressed: () {},
-            icon: const Icon(
-              Icons.delete,
-              color: Colors.white,
-            ),
-          ),
-        ),
-      ),
-    );
+  
+  void handleToDoChange (ToDo todo) {
+    setState(() {
+      todo.isDone = !todo.isDone;
+    });
+    
   }
+
 }
+
 
 class _SearchBox extends StatelessWidget {
   const _SearchBox();
